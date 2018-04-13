@@ -1,5 +1,9 @@
 package sample;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.Scanner;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.application.Application;
@@ -25,14 +29,14 @@ public class Phonebook extends Application {
 
         button = new Button("yes");
 
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("This should compact things");
-            }
+        button.setOnAction(e -> {
+            System.out.println("Hey now brown cow");
+            System.out.println("Does it work with multiple lines?");
         });
 
-        primaryStage.setTitle("PhoneBook 1995");
+
+
+
         StackPane layout = new StackPane();
         layout.getChildren().add(button);
 
@@ -50,9 +54,69 @@ public class Phonebook extends Application {
 
 
 
-    public static void main(String[] args) {
 
-        launch(args);
+        static int index;
+        static Entry[] entryList;
 
-    }
-}
+        public static void main(String[] args) throws FileNotFoundException {
+
+            String nameEntry, notesEntry, commandEntry, numberTemp, query;
+            char quitCondition;
+            long numberEntry;
+            boolean qSuccess;
+
+            launch(args);
+            entryList = new Entry[200];
+
+            Scanner input = new Scanner(System.in);
+
+            System.out.println("Loading...");
+
+            System.out.println();
+
+
+
+                //Reimplement these with buttons somehow.
+                //need to display entries as well.
+                /*
+                    case 'e':
+                        nameEntry = commandEntry.substring(2);
+                        System.out.print("Enter Number: ");
+                        numberTemp = input.nextLine();
+                        numberEntry = Long.parseLong(numberTemp.replaceAll("[^0-9]", ""));
+                        if (numberEntry < 1000000000)
+                            numberEntry += 4190000000L;
+                        System.out.print("Enter Notes: ");
+                        notesEntry = input.nextLine();
+                        System.out.println();
+
+                        entryList[index] = new Entry(nameEntry, numberEntry, notesEntry);
+                        index++;
+                        break;
+
+                    case 'f':
+                        query = commandEntry.substring(2);
+                        //qSuccess = findsEntry(query);
+                        //if (!qSuccess)
+                        //    System.out.println("** No entry found for " + query);
+                        break;
+                    case 'l':
+                        System.out.println();
+                        //listsEntries();
+                        break;
+
+                    case 'q':
+                        quitCondition = 'q';
+                        System.out.println("Saving and Shutting Down......");
+                        //WritesPhoneBook();
+                        System.exit(0);
+*/
+                }
+
+            }
+
+
+
+
+
+
