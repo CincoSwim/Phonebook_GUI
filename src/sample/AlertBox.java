@@ -16,6 +16,8 @@ public class AlertBox {
         window.setTitle(title);
         window.setMinWidth(250);
 
+        System.out.println("THis is a new line. Whoopee.");
+
         Label label = new Label();
         label.setText(message);
         Button closebutton = new Button("Close the Window");
