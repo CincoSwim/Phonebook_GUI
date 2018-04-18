@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Scanner;
+
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.application.Application;
@@ -12,72 +13,64 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import javax.swing.*;
 
 
 public class Phonebook extends Application {
-    static Button button;
+    Button button;
+    Stage window;
+    Scene scene1, scene2;
+
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
+        window = primaryStage;
+        window.setTitle("thenewboston");
 
-        BorderPane root = new BorderPane();
+        HBox topmenu = new HBox();
+        Button buttonA = new Button("file");
+        Button buttonB = new Button("edit");
+        Button buttonC = new Button("view");
 
-        button = new Button("yes");
+        topmenu.getChildren().addAll(buttonA, buttonB, buttonC);
 
-        button.setOnAction(e -> {
-            System.out.println("Hey now brown cow");
-            System.out.println("Does it work with multiple lines?");
-        });
+        VBox leftmenu = new VBox();
+        Button buttonD = new Button("Dee");
+        Button buttonE = new Button("Ee");
+        Button buttonF = new Button("Eph");
 
+        leftmenu.getChildren().addAll(buttonD, buttonE, buttonF);
 
-
-
-        StackPane layout = new StackPane();
-        layout.getChildren().add(button);
-
-        Scene scene = new Scene(layout, 300, 275);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        BorderPane borderPane = new BorderPane();
+        borderPane.setTop(topmenu);
+        borderPane.setLeft(leftmenu);
 
 
+        Scene scene = new Scene(borderPane, 300, 200);
+        window.setScene(scene);
+        window.show();
 
 
     }
+    private void closeProgram(){
+        Boolean answer = Confirmbox.display("title", "Sure you want to exit?");
+        if (answer){
+            System.out.println("File is saved");
+            window.close();}
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
 
 
+        launch(args);
 
 
-
-
-
-        static int index;
-        static Entry[] entryList;
-
-        public static void main(String[] args) throws FileNotFoundException {
-
-            String nameEntry, notesEntry, commandEntry, numberTemp, query;
-            char quitCondition;
-            long numberEntry;
-            boolean qSuccess;
-
-            launch(args);
-            entryList = new Entry[200];
-
-            Scanner input = new Scanner(System.in);
-
-            System.out.println("Loading...");
-
-            System.out.println();
-
-
-
-                //Reimplement these with buttons somehow.
-                //need to display entries as well.
+        //Reimplement these with buttons somehow.
+        //need to display entries as well.
                 /*
                     case 'e':
                         nameEntry = commandEntry.substring(2);
@@ -111,9 +104,9 @@ public class Phonebook extends Application {
                         //WritesPhoneBook();
                         System.exit(0);
 */
-                }
+    }
 
-            }
+}
 
 
 
