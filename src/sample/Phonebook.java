@@ -219,7 +219,7 @@ public class Phonebook extends Application {
                         break;
 
                     case 'f':
-                        query = commandEntry.substring(2);
+                        query = name.getText();
                         //qSuccess = findsEntry(query);
                         //if (!qSuccess)
                         //    System.out.println("** No entry found for " + query);
