@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.text.DecimalFormat;
+import java.text.Format;
 import java.util.Scanner;
 
 import javafx.collections.FXCollections;
@@ -46,10 +48,12 @@ public class Phonebook extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        DecimalFormat numFormat = new DecimalFormat("(000)-000-0000");
+
 
         window = primaryStage;
         window.setTitle("WinPhonebook '95");
-        window.setOnCloseRequest(e ->{
+        window.setOnCloseRequest(e -> {
             e.consume();
             closeProgram();
         });
@@ -67,15 +71,20 @@ public class Phonebook extends Application {
 
         Button addButton = new Button("Add");
         addButton.setMinWidth(70);
-        addButton.setOnAction(e ->{
+        addButton.setOnAction(e -> {
             EntryList[index] = new Entry();
+
+
             EntryList[index].setName(name.getText());
-            EntryList[index].setNumber(number.getText());
+            EntryList[index].setNumber(
+                    "(" + number.getText().substring(0, 3) +
+                            ")-" + number.getText().substring(3, 6) + "-" +
+                            number.getText().substring(6, 10)
+            );
             EntryList[index].setNotes(notes.getText());
             table.getItems().add(EntryList[index]);
             System.out.println(EntryList[index].name);
             index++;
-
 
         });
 
@@ -85,17 +94,16 @@ public class Phonebook extends Application {
         Button mergeButton = new Button("Merge");
         mergeButton.setMinWidth(150);
 
-        Button delButton= new Button("Delete");
+        Button delButton = new Button("Delete");
         delButton.setMinWidth(150);
+        delButton.setOnAction(e -> delButtonClicked());
 
         HBox addfind = new HBox(10);
         addfind.getChildren().addAll(addButton, findButton);
 
 
-
-
         VBox controls = new VBox(10);
-        controls.setPadding( new Insets(10, 10, 10, 10) );
+        controls.setPadding(new Insets(10, 10, 10, 10));
         controls.getChildren().addAll(addfind, name, number, notes, mergeButton, delButton, logo);
 
         //Name Column
@@ -112,7 +120,6 @@ public class Phonebook extends Application {
         TableColumn<Entry, String> notesColumn = new TableColumn<>("Notes");
         notesColumn.setMinWidth(200);
         notesColumn.setCellValueFactory(new PropertyValueFactory<>("notes"));
-
 
 
         table = new TableView<>();
@@ -133,6 +140,7 @@ public class Phonebook extends Application {
 
 
     }
+
     public static int ReadsPhoneBook() throws FileNotFoundException {
         //Static Method that reads entries from included phonebook.txt.
         //As each entry is read, a new Entry object is created.
@@ -161,6 +169,7 @@ public class Phonebook extends Application {
         }
         return index;
     }
+
     public static void WritesPhoneBook() throws FileNotFoundException {
         //Method that writes each objects name, number and notes for easy storage.
         //Formatted so that it can be read back by ReadsPhoneBook().
@@ -173,13 +182,20 @@ public class Phonebook extends Application {
         P.close();
         System.out.println("Phonebook Saved");
     }
+    public void delButtonClicked(){
+        ObservableList<Entry> entriesSelected, allEntries;
+        allEntries = table.getItems();
+        entriesSelected = table.getSelectionModel().getSelectedItems();
+
+        entriesSelected.forEach(allEntries::remove);
+    }
 
     //Creates and Returns an observable list made of Entry objects.
-    public static ObservableList<Entry> getsEntries(Entry[] entryArray, int index){
+    public static ObservableList<Entry> getsEntries(Entry[] entryArray, int index) {
 
         ObservableList<Entry> entries = FXCollections.observableArrayList();
 
-        for (int i=0; i < index; i++)//make sure index is static through the class. Really bad if it goes out of bounds.
+        for (int i = 0; i < index; i++)//make sure index is static through the class. Really bad if it goes out of bounds.
             entries.add(entryArray[i]);
 
         return entries;
@@ -190,7 +206,7 @@ public class Phonebook extends Application {
         if (answer) {
             try {
                 WritesPhoneBook();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             window.close();
