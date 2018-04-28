@@ -13,13 +13,13 @@ import javafx.event.ActionEvent;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -31,14 +31,11 @@ public class Phonebook extends Application {
     TableView<Entry> table;
     static int index;
     static Entry EntryList[] = new Entry[200];
-    static File phonebook;
+
     public static void main(String[] args) throws FileNotFoundException {
 
         //These lines just set some dummy entries.
         //This'll get replaced with a method to read/write from a text document, just like before.
-        EntryList[0] = new Entry ("Chris Pucko", "513-683-7895", "Cool dudee");
-        EntryList[1] = new Entry ("Jonathan DOKOKOKOKOKO", "phonenumberhereplacehlder", "Meta, bro.");
-        index = 3;
         //End test entries
         ReadsPhoneBook();
         getsEntries(EntryList, index);
@@ -48,8 +45,58 @@ public class Phonebook extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+
         window = primaryStage;
-        window.setTitle("thenewboston");
+        window.setTitle("WinPhonebook '95");
+        window.setOnCloseRequest(e ->{
+            e.consume();
+            closeProgram();
+        });
+
+        final ImageView logo = new ImageView();
+        Image logopng = new Image("https://i.imgur.com/K3IXCuP.png", 150, 150, false, true);
+        logo.setImage(logopng);
+
+        TextField name = new TextField();
+        name.setPromptText("Name");
+        TextField number = new TextField();
+        number.setPromptText("Number");
+        TextField notes = new TextField();
+        notes.setPromptText("Notes");
+
+        Button addButton = new Button("Add");
+        addButton.setMinWidth(70);
+        addButton.setOnAction(e ->{
+            EntryList[index] = new Entry();
+            EntryList[index].setName(name.getText());
+            EntryList[index].setNumber(number.getText());
+            EntryList[index].setNotes(notes.getText());
+            table.getItems().add(EntryList[index]);
+            System.out.println(EntryList[index].name);
+            index++;
+
+
+        });
+
+        Button findButton = new Button("Find");
+        findButton.setMinWidth(70);
+
+        Button mergeButton = new Button("Merge");
+        mergeButton.setMinWidth(150);
+
+        Button delButton= new Button("Delete");
+        delButton.setMinWidth(150);
+
+        HBox addfind = new HBox(10);
+        addfind.getChildren().addAll(addButton, findButton);
+
+
+
+
+        VBox controls = new VBox(10);
+        controls.setPadding( new Insets(10, 10, 10, 10) );
+        controls.getChildren().addAll(addfind, name, number, notes, mergeButton, delButton, logo);
 
         //Name Column
         TableColumn<Entry, String> nameColumn = new TableColumn<>("Name");
@@ -63,18 +110,22 @@ public class Phonebook extends Application {
 
         //Notes Column
         TableColumn<Entry, String> notesColumn = new TableColumn<>("Notes");
-        notesColumn.setMinWidth(300);
+        notesColumn.setMinWidth(200);
         notesColumn.setCellValueFactory(new PropertyValueFactory<>("notes"));
 
+
+
         table = new TableView<>();
+
         table.setItems(getsEntries(EntryList, index));
         table.getColumns().addAll(nameColumn, numColumn, notesColumn);
 
 
-        VBox vBox = new VBox();
-        vBox.getChildren().addAll(table);
+        HBox BookView = new HBox();
+        BookView.getChildren().addAll(controls, table);
 
-        Scene scene = new Scene(vBox);
+
+        Scene scene = new Scene(BookView);
 
 
         window.setScene(scene);
@@ -86,13 +137,7 @@ public class Phonebook extends Application {
         //Static Method that reads entries from included phonebook.txt.
         //As each entry is read, a new Entry object is created.
 
-        try {
-            phonebook = new File("phonebook.txt");
-            if (!phonebook.exists())
-                phonebook.createNewFile();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        File phonebook = new File("phonebook.txt");
         Scanner read = new Scanner(phonebook);
         String name, notes, number;
 
@@ -143,10 +188,15 @@ public class Phonebook extends Application {
     private void closeProgram() {
         Boolean answer = Confirmbox.display("title", "Sure you want to exit?");
         if (answer) {
-            System.out.println("File is saved");
+            try {
+                WritesPhoneBook();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             window.close();
         }
     }
+
 }
 
 
