@@ -81,6 +81,10 @@ public class Phonebook extends Application {
 
         Button findButton = new Button("Find");
         findButton.setMinWidth(70);
+        findButton.setOnAction(e ->
+                findButtonClicked(name.getText())
+
+        );
 
         Button mergeButton = new Button("Merge");
         mergeButton.setMinWidth(150);
@@ -184,8 +188,7 @@ public class Phonebook extends Application {
         entriesSelected = table.getSelectionModel().getSelectedItems();
         selectedName = table.getSelectionModel().getSelectedItem().name;
 
-        selectedNumber = table.getSelectionModel().getSelectedItem().number;
-        indexSelected = findIndex(selectedNumber);
+        indexSelected = findIndex(selectedName);
         System.out.println(indexSelected);
         System.out.println(selectedName);
 
@@ -194,7 +197,15 @@ public class Phonebook extends Application {
         EntryList[indexSelected].notes = "";
         entriesSelected.forEach(allEntries::remove);
     }
-
+    public static void findButtonClicked(String query){
+        String name, number, notes;
+        int index;
+        index = findIndex(query);
+        name = EntryList[index].name;
+        number = EntryList[index].number;
+        notes = EntryList[index].notes;
+        AlertBox.display(name, number, notes);
+    }
 
 
 
@@ -210,11 +221,11 @@ public class Phonebook extends Application {
     }
 
     public static int findIndex(String query) {
-        String numberTest;
+        String nameTest;
         int closestIndex = 200;
         for (int i = 0; i <= index - 1; i++) {
-            numberTest = EntryList[i].number;
-            if (query.equals(numberTest)) {
+            nameTest = EntryList[i].name;
+            if (query.equals(nameTest)) {
                 closestIndex = i;
             }
         }
