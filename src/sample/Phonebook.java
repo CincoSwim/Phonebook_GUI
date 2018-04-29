@@ -1,9 +1,6 @@
 package sample;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.util.Scanner;
@@ -36,9 +33,6 @@ public class Phonebook extends Application {
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        //These lines just set some dummy entries.
-        //This'll get replaced with a method to read/write from a text document, just like before.
-        //End test entries
         ReadsPhoneBook();
         getsEntries(EntryList, index);
         System.out.println(index);
@@ -48,8 +42,9 @@ public class Phonebook extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        DecimalFormat numFormat = new DecimalFormat("(000)-000-0000");
-
+        final ImageView logo = new ImageView();
+        Image logopng = new Image("https://i.imgur.com/K3IXCuP.png", 150, 150, false, true);
+        logo.setImage(logopng);
 
         window = primaryStage;
         window.setTitle("WinPhonebook '95");
@@ -58,23 +53,19 @@ public class Phonebook extends Application {
             closeProgram();
         });
 
-        final ImageView logo = new ImageView();
-        Image logopng = new Image("https://i.imgur.com/K3IXCuP.png", 150, 150, false, true);
-        logo.setImage(logopng);
 
         TextField name = new TextField();
-        name.setPromptText("Name");
-        TextField number = new TextField();
-        number.setPromptText("Number");
         TextField notes = new TextField();
+        TextField number = new TextField();
+        name.setPromptText("Name");
+        number.setPromptText("Number");
         notes.setPromptText("Notes");
+
 
         Button addButton = new Button("Add");
         addButton.setMinWidth(70);
         addButton.setOnAction(e -> {
             EntryList[index] = new Entry();
-
-
             EntryList[index].setName(name.getText());
             EntryList[index].setNumber(
                     "(" + number.getText().substring(0, 3) +
@@ -149,20 +140,20 @@ public class Phonebook extends Application {
         Scanner read = new Scanner(phonebook);
         String name, notes, number;
 
-
         index = 0;
 
         try {
-
-
-            for (int i = 0; i < 200; i++) {
+            for (int i = 0; i <=200; i++){
                 name = read.nextLine();
                 number = read.nextLine();
                 notes = read.nextLine();
-                EntryList[i] = new Entry(name, number, notes);
-                index++;
-
+                if (!name.equals("")) {
+                    EntryList[index] = new Entry(name, number, notes);
+                    index++;
+                }
             }
+
+
         } catch (Exception NoSuchElementException) {
             System.out.println("Now Loaded!");
             return index;
@@ -175,20 +166,37 @@ public class Phonebook extends Application {
         //Formatted so that it can be read back by ReadsPhoneBook().
         PrintStream P = new PrintStream("phonebook.txt");
         for (int i = 0; i < index; i++) {
-            P.println(EntryList[i].name);
-            P.println(EntryList[i].number);
-            P.println(EntryList[i].notes);
+                P.println(EntryList[i].name);
+                P.println(EntryList[i].number);
+                P.println(EntryList[i].notes);
+
+
         }
         P.close();
         System.out.println("Phonebook Saved");
     }
-    public void delButtonClicked(){
+
+    public void delButtonClicked() {
         ObservableList<Entry> entriesSelected, allEntries;
+        String selectedName, selectedNumber;
+        int indexSelected;
         allEntries = table.getItems();
         entriesSelected = table.getSelectionModel().getSelectedItems();
+        selectedName = table.getSelectionModel().getSelectedItem().name;
 
+        selectedNumber = table.getSelectionModel().getSelectedItem().number;
+        indexSelected = findIndex(selectedNumber);
+        System.out.println(indexSelected);
+        System.out.println(selectedName);
+
+        EntryList[indexSelected].name = "";
+        EntryList[indexSelected].number = "";
+        EntryList[indexSelected].notes = "";
         entriesSelected.forEach(allEntries::remove);
     }
+
+
+
 
     //Creates and Returns an observable list made of Entry objects.
     public static ObservableList<Entry> getsEntries(Entry[] entryArray, int index) {
@@ -199,6 +207,18 @@ public class Phonebook extends Application {
             entries.add(entryArray[i]);
 
         return entries;
+    }
+
+    public static int findIndex(String query) {
+        String numberTest;
+        int closestIndex = 200;
+        for (int i = 0; i <= index - 1; i++) {
+            numberTest = EntryList[i].number;
+            if (query.equals(numberTest)) {
+                closestIndex = i;
+            }
+        }
+        return closestIndex;
     }
 
     private void closeProgram() {
