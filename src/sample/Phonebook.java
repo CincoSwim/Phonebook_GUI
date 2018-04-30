@@ -48,7 +48,7 @@ public class Phonebook extends Application {
         TextField name = new TextField();
         TextField notes = new TextField();
         TextField number = new TextField();
-        name.setPromptText("nameField");
+        name.setPromptText("Name");
         number.setPromptText("Number");
         notes.setPromptText("Notes");
 
