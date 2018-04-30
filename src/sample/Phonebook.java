@@ -43,7 +43,8 @@ public class Phonebook extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         final ImageView logo = new ImageView();
-        Image logopng = new Image("https://i.imgur.com/K3IXCuP.png", 150, 150, false, true);
+        Image logopng = new Image("http://www.utoledo.edu/nsm/lec/logos/images/raw_bmp_extract.gif",
+                150, 150, false, true);
         logo.setImage(logopng);
 
         window = primaryStage;
@@ -88,6 +89,49 @@ public class Phonebook extends Application {
 
         Button mergeButton = new Button("Merge");
         mergeButton.setMinWidth(150);
+        mergeButton.setOnAction(e ->{
+            String oldNum, oldName, oldNote, newName, newNum, newNote;
+            String query;
+            boolean numChanged;
+            int indexEdited;
+
+            numChanged = false;
+            query = table.getSelectionModel().getSelectedItem().name;
+            indexEdited = findIndex(query);
+            oldNum = EntryList[indexEdited].number;
+            oldName = EntryList[indexEdited].name;
+            oldNote = EntryList[indexEdited].notes;
+
+            delButtonClicked();
+
+            newName = name.getText();
+            newNum = number.getText();
+            newNote = notes.getText();
+
+            if (newName.length() > 0)
+                EntryList[indexEdited].name = newName;
+            else
+                EntryList[indexEdited].name = oldName;
+            if (newNote.length() > 0)
+                EntryList[indexEdited].notes = newNote + oldNote;
+            else
+                EntryList[indexEdited].notes = oldNote;
+            if (newNum.length() > 0) {
+                EntryList[indexEdited].setNumber(
+                        "(" + newNum.substring(0, 3) +
+                                ")-" + newNum.substring(3, 6) + "-" +
+                                newNum.substring(6, 10));
+                numChanged = true;
+            }else
+                EntryList[indexEdited].number = oldNum;
+
+            if (numChanged){
+                EntryList[indexEdited].notes = newNote + " " + oldNote + " Old Number: " + oldNum;
+            }
+
+            table.getItems().add(EntryList[indexEdited]);
+
+        });
 
         Button delButton = new Button("Delete");
         delButton.setMinWidth(150);
@@ -113,7 +157,7 @@ public class Phonebook extends Application {
 
         //Notes Column
         TableColumn<Entry, String> notesColumn = new TableColumn<>("Notes");
-        notesColumn.setMinWidth(200);
+        notesColumn.setMinWidth(500);
         notesColumn.setCellValueFactory(new PropertyValueFactory<>("notes"));
 
 
@@ -197,7 +241,7 @@ public class Phonebook extends Application {
         EntryList[indexSelected].notes = "";
         entriesSelected.forEach(allEntries::remove);
     }
-    public static void findButtonClicked(String query){
+    public static int findButtonClicked(String query){
         String name, number, notes;
         int index;
         index = findIndex(query);
@@ -205,6 +249,13 @@ public class Phonebook extends Application {
         number = EntryList[index].number;
         notes = EntryList[index].notes;
         AlertBox.display(name, number, notes);
+
+        return index;
+    }
+    public void mergeButtonClicked(){
+
+
+
     }
 
 
