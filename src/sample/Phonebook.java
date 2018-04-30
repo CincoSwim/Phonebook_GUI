@@ -1,19 +1,11 @@
 package sample;
 
 import java.io.*;
-import java.text.DecimalFormat;
-import java.text.Format;
 import java.util.Scanner;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
-import javafx.event.ActionEvent;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -21,9 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
-import javax.swing.*;
-
 
 public class Phonebook extends Application {
     Stage window;
@@ -43,12 +32,13 @@ public class Phonebook extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         final ImageView logo = new ImageView();
-        Image logopng = new Image("http://www.utoledo.edu/nsm/lec/logos/images/raw_bmp_extract.gif",
+        Image logopng = new Image(
+                "http://www.utoledo.edu/nsm/lec/logos/images/raw_bmp_extract.gif",
                 150, 150, false, true);
         logo.setImage(logopng);
 
         window = primaryStage;
-        window.setTitle("WinPhonebook '95");
+        window.setTitle("UT Phonebook Ex+");
         window.setOnCloseRequest(e -> {
             e.consume();
             closeProgram();
@@ -58,14 +48,14 @@ public class Phonebook extends Application {
         TextField name = new TextField();
         TextField notes = new TextField();
         TextField number = new TextField();
-        name.setPromptText("Name");
+        name.setPromptText("nameField");
         number.setPromptText("Number");
         notes.setPromptText("Notes");
 
 
-        Button addButton = new Button("Add");
-        addButton.setMinWidth(70);
-        addButton.setOnAction(e -> {
+        Button addBtn = new Button("Add");
+        addBtn.setMinWidth(70);
+        addBtn.setOnAction(e -> {
             EntryList[index] = new Entry();
             EntryList[index].setName(name.getText());
             EntryList[index].setNumber(
@@ -80,16 +70,15 @@ public class Phonebook extends Application {
 
         });
 
-        Button findButton = new Button("Find");
-        findButton.setMinWidth(70);
-        findButton.setOnAction(e ->
+        Button findBtn = new Button("Find");
+        findBtn.setMinWidth(70);
+        findBtn.setOnAction(e ->
                 findButtonClicked(name.getText())
-
         );
 
         Button mergeButton = new Button("Merge");
         mergeButton.setMinWidth(150);
-        mergeButton.setOnAction(e ->{
+        mergeButton.setOnAction(e -> {
             String oldNum, oldName, oldNote, newName, newNum, newNote;
             String query;
             boolean numChanged;
@@ -122,11 +111,11 @@ public class Phonebook extends Application {
                                 ")-" + newNum.substring(3, 6) + "-" +
                                 newNum.substring(6, 10));
                 numChanged = true;
-            }else
+            } else
                 EntryList[indexEdited].number = oldNum;
 
-            if (numChanged){
-                EntryList[indexEdited].notes = newNote + " " + oldNote + " Old Number: " + oldNum;
+            if (numChanged) {
+                EntryList[indexEdited].notes = newNote + " " + oldNote + "Old Number: " + oldNum;
             }
 
             table.getItems().add(EntryList[indexEdited]);
@@ -138,7 +127,7 @@ public class Phonebook extends Application {
         delButton.setOnAction(e -> delButtonClicked());
 
         HBox addfind = new HBox(10);
-        addfind.getChildren().addAll(addButton, findButton);
+        addfind.getChildren().addAll(addBtn, findBtn);
 
 
         VBox controls = new VBox(10);
@@ -180,6 +169,7 @@ public class Phonebook extends Application {
 
     }
 
+    //Reads phonebook.txt line by line to create an array of Entry objects.
     public static int ReadsPhoneBook() throws FileNotFoundException {
         //Static Method that reads entries from included phonebook.txt.
         //As each entry is read, a new Entry object is created.
@@ -191,7 +181,7 @@ public class Phonebook extends Application {
         index = 0;
 
         try {
-            for (int i = 0; i <=200; i++){
+            for (int i = 0; i <= 200; i++) {
                 name = read.nextLine();
                 number = read.nextLine();
                 notes = read.nextLine();
@@ -209,14 +199,15 @@ public class Phonebook extends Application {
         return index;
     }
 
+    //Writes all Entry objects in the array to fill phonebook.txt
     public static void WritesPhoneBook() throws FileNotFoundException {
         //Method that writes each objects name, number and notes for easy storage.
         //Formatted so that it can be read back by ReadsPhoneBook().
         PrintStream P = new PrintStream("phonebook.txt");
         for (int i = 0; i < index; i++) {
-                P.println(EntryList[i].name);
-                P.println(EntryList[i].number);
-                P.println(EntryList[i].notes);
+            P.println(EntryList[i].name);
+            P.println(EntryList[i].number);
+            P.println(EntryList[i].notes);
 
 
         }
@@ -224,6 +215,8 @@ public class Phonebook extends Application {
         System.out.println("Phonebook Saved");
     }
 
+    //Runs when the delete button is clicked. Finds the index of the selected element,
+    // and removes it from the array and table.
     public void delButtonClicked() {
         ObservableList<Entry> entriesSelected, allEntries;
         String selectedName, selectedNumber;
@@ -241,7 +234,10 @@ public class Phonebook extends Application {
         EntryList[indexSelected].notes = "";
         entriesSelected.forEach(allEntries::remove);
     }
-    public static int findButtonClicked(String query){
+
+    //Uses the name in the "Name" text field, searches for it,
+    //and posts an alert box with the associated Name, number, and notes.
+    public static int findButtonClicked(String query) {
         String name, number, notes;
         int index;
         index = findIndex(query);
@@ -252,15 +248,8 @@ public class Phonebook extends Application {
 
         return index;
     }
-    public void mergeButtonClicked(){
 
-
-
-    }
-
-
-
-    //Creates and Returns an observable list made of Entry objects.
+    //Creates and returns an observable list made of Entry objects.
     public static ObservableList<Entry> getsEntries(Entry[] entryArray, int index) {
 
         ObservableList<Entry> entries = FXCollections.observableArrayList();
@@ -271,6 +260,7 @@ public class Phonebook extends Application {
         return entries;
     }
 
+    //returns the index of an entry searched for by name.
     public static int findIndex(String query) {
         String nameTest;
         int closestIndex = 200;
@@ -296,39 +286,3 @@ public class Phonebook extends Application {
     }
 
 }
-
-
-//Reimplement these with buttons somehow.
-//need to display entries as well.
-                /*
-                    case 'e':
-                        nameEntry = commandEntry.substring(2);
-                        System.out.print("Enter Number: ");
-                        numberTemp = input.nextLine();
-                        numberEntry = Long.parseLong(numberTemp.replaceAll("[^0-9]", ""));
-                        if (numberEntry < 1000000000)
-                            numberEntry += 4190000000L;
-                        System.out.print("Enter Notes: ");
-                        notesEntry = input.nextLine();
-                        System.out.println();
-
-                        entryList[index] = new Entry(nameEntry, numberEntry, notesEntry);
-                        index++;
-                        break;
-
-                    case 'f':
-                        query = name.getText();
-                        //qSuccess = findsEntry(query);
-                        //if (!qSuccess)
-                        //    System.out.println("** No entry found for " + query);
-                        break;
-
-
-
-}
-
-
-
-
-
-*/
